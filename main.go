@@ -1,6 +1,9 @@
 package main
 
+//参考 https://qiita.com/tutuz/items/ab1fd3c0ee6fa01e08b6
+
 import (
+	"bufio"
 	"fmt"
 	"net"
 )
@@ -32,20 +35,21 @@ func run() error {
 
 	fmt.Println(">>> start")
 
-	buf := make([]byte, 1024)
+	scanner := bufio.NewScanner(conn)
 
-	for {
-		n, err := conn.Read(buf)
-		if n == 0 {
+	for scanner.Scan() {
+		if scanner.Text() == "" {
 			break
 		}
-		if err != nil {
-			return err
-		}
-		fmt.Println(string(buf[:n]))
+		fmt.Println(scanner.Text())
+	}
+
+	if scanner.Err() != nil {
+		return scanner.Err()
 	}
 
 	fmt.Println("<<< end")
+
 
 	return nil
 }
